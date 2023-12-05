@@ -41,8 +41,6 @@ async def upload_file(background_tasks: BackgroundTasks, file: UploadFile, db: S
         # Secure way to save the file
         file_location = os.path.join(folder, file.filename)
 
-        content_parser = FileParser(file_location)
-        file_text_content = content_parser.parse()
         file_content = await file.read()  # Read file content as bytes
 
         with open(file_location, "wb+") as file_object:
@@ -51,6 +49,8 @@ async def upload_file(background_tasks: BackgroundTasks, file: UploadFile, db: S
             # Use shutil.copyfileobj for secure file writing
             shutil.copyfileobj(file_like_object, file_object)
 
+        content_parser = FileParser(file_location)
+        file_text_content = content_parser.parse()
         # save file details in the database
         new_file = File(file_name=file.filename,
                         file_content=file_text_content)
